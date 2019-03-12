@@ -83,7 +83,7 @@ Volumes template block for deployable resources
 {{- $root := . -}}
 {{- range $name, $config := $root.Values.configMaps -}}
 {{- if $config.enabled }}
-{{- if not ( empty $config.files ) }}
+{{- if or ( not ( empty $config.files )) ( not (empty $config.templates )) }}
 - name: config-{{ $name }}-files
   configMap:
     name: {{ include "nodelocaldns.files.fullname" (list $root $name) }}
@@ -107,7 +107,7 @@ VolumeMounts template block for deployable resources
 {{- define "nodelocaldns.files.volumeMounts" -}}
 {{- range $name, $config := .Values.configMaps -}}
 {{- if $config.enabled }}
-{{- if not ( empty $config.files ) }}
+{{- if or (not ( empty $config.files )) (not ( empty $config.templates )) }}
 - mountPath: {{ default (printf "/%s" $name) $config.mountPath }}
   name: config-{{ $name }}-files
 {{- end }}
