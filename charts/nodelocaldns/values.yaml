@@ -8,6 +8,10 @@ image:
   # pullSecrets:
   #    - name: regsecret
 
+localIp: "169.254.20.10"
+dnsDomain: "cluster.local"
+dnsServer: "172.20.0.10"
+
 useHostNetwork: true
 
 #useHostPID: true
@@ -94,10 +98,6 @@ rbac:
 tolerations:
 - key: "CriticalAddonsOnly"
   operator: "Exists"
-
-localIp: "169.254.169.254"
-dnsDomain: "cluster.local"
-dnsServer: "172.20.0.10"
 
 configMaps:
   node-local-dns:

@@ -3,7 +3,7 @@
 set -e
 
 set -vx
-(cd charts/nodelocaldns; helm package .)
+(cd charts/nodelocaldns; helm dependency build && helm package .)
 chart-releaser upload -o mumoshu -r nodelocaldns -t $GITHUB_TOKEN -p charts/nodelocaldns
 chart-releaser index -o mumoshu -r nodelocaldns -t $GITHUB_TOKEN -p docs/index.yaml
 git add docs/index.yaml
