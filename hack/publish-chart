@@ -5,6 +5,7 @@ set -e
 set -vx
 (cd charts/nodelocaldns; helm dependency build && helm package .)
 chart-releaser upload -o mumoshu -r nodelocaldns -t $GITHUB_TOKEN -p charts/nodelocaldns
+sleep 10
 chart-releaser index -o mumoshu -r nodelocaldns -t $GITHUB_TOKEN -p docs/index.yaml
 git add docs/index.yaml
 git commit -m 'Update helm chart repository index'
