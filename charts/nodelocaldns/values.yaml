@@ -36,6 +36,7 @@ useHostNetwork: true
 updateStrategy:
   rollingUpdate:
     maxUnavailable: 10%
+  type: RollingUpdate
 
 ## Sets PriorityClassName if defined
 priorityClassName: system-node-critical
