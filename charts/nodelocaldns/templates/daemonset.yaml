@@ -21,10 +21,6 @@ spec:
       {{- end }}
     spec:
       terminationGracePeriodSeconds: 1
-      {{- if .Values.securityContext }}
-      securityContext:
-{{ toYaml .Values.securityContext | indent 8 }}
-      {{- end }}
       {{- if .Values.useHostNetwork }}
       hostNetwork: {{ .Values.useHostNetwork }}
       dnsPolicy: Default  # Don't use cluster DNS.
@@ -43,7 +39,11 @@ spec:
       - name: {{ default .Chart.Name .Values.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: [ "-localip", "{{ .Values.localIp }}", "-conf", "/etc/coredns/Corefile" ]
+        args: [ "-localip", "{{ .Values.localIp }}", "-conf", "/etc/coredns/Corefile" ]
+        {{- if .Values.securityContext }}
+        securityContext:
+ {{ toYaml .Values.securityContext | indent 12 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- if .Values.env }}
