@@ -1,0 +1,190 @@
+# Default values for nodelocaldns
+image:
+  repository: k8s.gcr.io/k8s-dns-node-cache
+  tag: 1.15.0
+  pullPolicy: IfNotPresent
+  ## It is possible to specify docker registry credentials
+  ## See https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets:
+  #    - name: regsecret
+
+useHostNetwork: true
+
+#useHostPID: true
+
+## Annotations to add to the DaemonSet's Pods
+# podAnnotations:
+#   scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
+
+## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
+# tolerations: []
+
+## Allow the DaemonSet to schedule on selected nodes
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector: {}
+
+## Allow the DaemonSet to schedule ussing affinity rules
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+## Allow the DaemonSet to perform a rolling update on helm update
+## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy:
+  rollingUpdate:
+    maxUnavailable: 10%
+
+## Sets PriorityClassName if defined
+priorityClassName: system-node-critical
+
+## You can modify the security context used to run the containers by
+## modifying the label type below:
+securityContext:
+  privileged: true
+
+## Daemonset container name
+name: node-cache
+
+# env:
+#   - name:
+#     value:
+
+## If needed, you can specify additionnal volumes to mount in the container
+volumes:
+- name: xtables-lock
+  hostPath:
+    path: /run/xtables.lock
+    type: FileOrCreate
+
+volumeMounts:
+- mountPath: /run/xtables.lock
+  name: xtables-lock
+  readOnly: false
+
+ ## Override the agent's liveness probe logic from the default:
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+    initialDelaySeconds: 60
+    timeoutSeconds: 5
+
+## Override the agent's readiness probe logic from the default:
+# readinessProbe:
+#   exec:
+#     command: ["/bin/true"]
+
+## node-init-agent resource requests and limits
+## Make sure to keep requests and limits equal to keep the pods in the Guaranteed QoS class
+## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: 25m
+    memory: 5Mi
+  limits:
+    memory: 30Mi
+
+rbac:
+  ## If true, create & use RBAC resources
+  create: true
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
+
+tolerations:
+- key: "CriticalAddonsOnly"
+  operator: "Exists"
+
+localIp: "169.254.169.254"
+dnsDomain: "cluster.local"
+dnsServer: "172.20.0.10"
+
+configMaps:
+  node-local-dns:
+    enabled: true
+    labels:
+      addonmanager.kubernetes.io/mode: EnsureExistse
+    mountPath: /etc/coredns
+    templates:
+      "Corefile": |-
+        {{ .Values.dnsDomain }}:53 {
+            errors
+            cache {
+                    success 9984 30
+                    denial 9984 5
+            }
+            reload
+            loop
+            bind {{ .Values.localIp }}
+            forward . {{ .Values.dnsServer }} {
+                    force_tcp
+            }
+            prometheus :9253
+            health {{ .Values.localIp }}:8080
+            }
+        in-addr.arpa:53 {
+            errors
+            cache 30
+            reload
+            loop
+            bind {{ .Values.localIp }}
+            forward . {{ .Values.dnsServer }} {
+                    force_tcp
+            }
+            prometheus :9253
+            }
+        ip6.arpa:53 {
+            errors
+            cache 30
+            reload
+            loop
+            bind {{ .Values.localIp }}
+            forward . {{ .Values.dnsServer }} {
+                    force_tcp
+            }
+            prometheus :9253
+            }
+        .:53 {
+            errors
+            cache 30
+            reload
+            loop
+            bind {{ .Values.localIp }}
+            forward . /etc/resolv.conf {
+                    force_tcp
+            }
+            prometheus :9253
+            }
+    files: {}
+  # default:
+  #   enabled: false
+  #   mountPath: /config-default
+  #   annotations:
+  #     name: value
+  #   labels:
+  #     name: value
+  #   env:
+  #     ENV_NAME: ENV_VALUE
+  #   files:
+  #     "test.txt": |-
+  #         ...
+  #     "test.yaml":
+  #         group:
+  #           key: value
+
+secrets: {}
+  # default:
+  #   enabled: false
+  #   mountPath: /secret-default
+  #   annotations:
+  #     name: value
+  #   labels:
+  #     name: value
+  #   env:
+  #     ENV_NAME: ENV_VALUE
+  #   files:
+  #     "test.crt": |-
+  #         ...
+  #     "test.yaml":
+  #         group:
+  #           key: value

@@ -1,0 +1,16 @@
+name: nodelocaldns
+version: 0.1.0
+appVersion: 1.15.0
+description: Nodelocal DNS Cache
+keywords:
+- node
+- dns
+home: https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns
+sources:
+# upstream
+- https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns
+# chart
+- https://github.com/mumoshu/nodelocaldns
+maintainers:
+- name: mumoshu
+  email: ykuoka@gmail.com
