@@ -2,6 +2,24 @@ apiVersion: v1
 entries:
   nodelocaldns:
   - appVersion: 1.15.0
+    created: 2019-03-13T00:11:55.746776+09:00
+    description: Nodelocal DNS Cache
+    digest: 1386b450b5415b0c1c7ee0d226068f84703f3f7ce468b2853045981e9303e556
+    home: https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns
+    keywords:
+    - node
+    - dns
+    maintainers:
+    - email: ykuoka@gmail.com
+      name: mumoshu
+    name: nodelocaldns
+    sources:
+    - https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/nodelocaldns
+    - https://github.com/mumoshu/nodelocaldns
+    urls:
+    - https://github.com/mumoshu/nodelocaldns/releases/download/nodelocaldns-0.1.5/nodelocaldns-0.1.5.tgz
+    version: 0.1.5
+  - appVersion: 1.15.0
     created: 2019-03-13T00:10:32.275576+09:00
     description: Nodelocal DNS Cache
     digest: c75c3b66d52cf3dc0cbffc1773eeb0a4c19b860151bec3083b27058c55e631ce
