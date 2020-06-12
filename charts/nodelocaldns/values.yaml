@@ -99,6 +99,10 @@ rbac:
 tolerations:
 - key: "CriticalAddonsOnly"
   operator: "Exists"
+- effect: "NoExecute"
+  operator: "Exists"
+- effect: "NoSchedule"
+  operator: "Exists"
 
 configMaps:
   node-local-dns:
