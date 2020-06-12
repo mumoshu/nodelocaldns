@@ -65,13 +65,20 @@ volumeMounts:
   name: xtables-lock
   readOnly: false
 
- ## Override the agent's liveness probe logic from the default:
+## Override the agent's liveness probe logic from the default:
 livenessProbe:
   httpGet:
     path: /health
     port: 8080
-    initialDelaySeconds: 60
-    timeoutSeconds: 5
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
 
 ## Override the agent's readiness probe logic from the default:
 # readinessProbe:
