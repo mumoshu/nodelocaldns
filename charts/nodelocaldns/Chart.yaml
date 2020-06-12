@@ -1,6 +1,6 @@
 name: nodelocaldns
 version: 0.1.5
-appVersion: 1.15.0
+appVersion: 1.15.13
 description: Nodelocal DNS Cache
 keywords:
 - node
